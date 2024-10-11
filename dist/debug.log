@@ -1,0 +1,8 @@
+2024-10-11 19:10:56,300 - DEBUG - Starting new HTTPS connection (1): launchermeta.mojang.com:443
+2024-10-11 19:10:56,728 - DEBUG - https://launchermeta.mojang.com:443 "GET /mc/game/version_manifest.json HTTP/11" 200 None
+2024-10-11 19:10:59,130 - DEBUG - Starting new HTTPS connection (1): files.minecraftforge.net:443
+2024-10-11 19:10:59,949 - DEBUG - https://files.minecraftforge.net:443 "GET /net/minecraftforge/forge/ HTTP/11" 200 None
+2024-10-11 19:11:00,074 - DEBUG - Starting new HTTPS connection (1): meta.fabricmc.net:443
+2024-10-11 19:11:00,853 - DEBUG - https://meta.fabricmc.net:443 "GET /v2/versions/loader HTTP/11" 200 2392
+2024-10-11 19:11:48,559 - DEBUG - Starting new HTTPS connection (1): files.minecraftforge.net:443
+2024-10-11 19:11:49,412 - DEBUG - https://files.minecraftforge.net:443 "GET /net/minecraftforge/forge/index_1.19.2.html HTTP/11" 200 None
