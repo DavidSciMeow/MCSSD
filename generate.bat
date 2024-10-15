@@ -1,1 +1,0 @@
-pyinstaller --name MCSSD --onefile --add-data "github_icon.png;." main.py
