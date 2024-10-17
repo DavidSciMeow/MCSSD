@@ -210,3 +210,131 @@ def search_mods(keyword=None, fuzzy=False, category=0, mode=0, platform=0, mcver
         'total_pages': total_pages,
         'total_items': total_items
     }
+
+def get_mod_details(modid):
+    search_url = f"https://www.mcmod.cn/class/{modid}.html"
+    response = requests.get(search_url)
+    
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch mod page for modid {modid}")
+    
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 提取 mod 名称
+    mod_name_tag = soup.find('h3')
+    if not mod_name_tag:
+        raise Exception(f"Failed to find mod name for modid {modid}")
+    
+    mod_name = mod_name_tag.text.strip()
+    
+    # 检查是否存在“如何下载？”或“下载本模组”的链接
+    download_button = soup.find('a', {'class': 'download-btn'})
+    
+    download_url = None
+    if download_button:
+        if 'href' in download_button.attrs and download_button['href'] != 'javascript:void(0);':
+            download_url = download_button['href']
+            if download_url.startswith('//'):
+                download_url = 'https:' + download_url
+    
+    related_links = []
+    common_link_frame = soup.find('div', {'class': 'common-link-frame common-link-frame-style-3'})
+    if common_link_frame:
+        list_div = common_link_frame.find('div', {'class': 'list'})
+        if list_div:
+            ul = list_div.find('ul', {'class': 'common-link-icon-frame common-link-icon-frame-style-3'})
+            if ul:
+                for li in ul.find_all('li'):
+                    span = li.find('span', {'class': 'name'})
+                    a = li.find('a', {'rel': 'nofollow noreferrer'})
+                    if span and a:
+                        related_links.append({
+                            'name': span.text.strip(),
+                            'url': a['href'].strip()
+                        })
+    
+     # 提取 mod 的运作方式和支持平台
+    operation_method = []
+    supported_platforms = "Unknown"
+    mod_info = soup.find('div', {'class': 'class-info'})
+    if mod_info:
+        info_items = mod_info.find_all('li', {'class': 'col-lg-4'})
+        for item in info_items:
+            if '支持平台' in item.text:
+                supported_platforms = item.find('a').text.strip()
+    
+    # 提取支持的MC版本
+    mc_versions = soup.find('li', {'class': 'col-lg-12 mcver'})
+    seen_methods = set()
+    if mc_versions:
+        for ul in mc_versions.find_all('ul'):
+            version_type = ul.find('li').text.strip()
+            versions = [a.text.strip() for a in ul.find_all('a')]
+            if version_type not in seen_methods:
+                seen_methods.add(version_type)
+                operation_method.append({
+                    'type': version_type,
+                    'versions': versions
+                })
+
+    # 提取模组关系
+    class_relation_list = soup.find('ul', {'class': 'class-relation-list'})
+    mod_relations = []
+    if class_relation_list:
+        for fieldset in class_relation_list.find_all('fieldset'):
+            relation_type = fieldset.find('legend').text.strip()
+            relations = []
+            for li in fieldset.find_all('li', {'class': 'col-lg-12 relation'}):
+                relation_desc = li.find('span').text.strip()
+                related_mods = [a.text.strip() for a in li.find_all('a')]
+                relations.append({
+                    'description': relation_desc,
+                    'mods': related_mods
+                })
+            mod_relations.append({
+                'type': relation_type,
+                'relations': relations
+            })
+
+    result = {
+        'mod_name': mod_name,
+        'modid': modid,
+        'download_url': download_url,
+        'related_links': related_links,
+        'operation_method': operation_method,
+        'supported_platforms': supported_platforms,
+        'mod_relations': mod_relations
+    }
+    
+    return result
+
+def fetch_download_links(modid):
+    url = f"https://www.mcmod.cn/download/{modid}.html"
+    response = requests.get(url)
+    response.raise_for_status()  # Ensure we notice bad responses
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find('table', class_='download-table')
+    rows = table.find('tbody').find_all('tr')
+
+    download_links = []
+
+    for row in rows:
+        data = {
+            'environment': row.find('span', class_='download-platform').get_text(strip=True),
+            'api': row.find('span', class_='download-api').get_text(strip=True),
+            'filename': row['data-filename'],
+            'version': row['data-version'],
+            'size': row.find_all('td')[3].get_text(strip=True),
+            'downloads': row.find_all('td')[4].get_text(strip=True),
+            'likes': row.find_all('td')[5].get_text(strip=True),
+            'upload_time': row.find_all('td')[6].get_text(strip=True)
+        }
+        download_links.append(data)
+
+    return download_links
+
+
+
+
+

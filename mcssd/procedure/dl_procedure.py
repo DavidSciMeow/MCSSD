@@ -1,10 +1,5 @@
-from tkinter import ttk, filedialog, messagebox
 import requests
-import threading
 from urllib.parse import urlparse, parse_qs
-import logging
-import mcssd.util as util
-
 
 # 获取原版数据
 def start_download_Vanilla(version, progress_var):
