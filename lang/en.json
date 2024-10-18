@@ -1,0 +1,19 @@
+{
+    "menu_language": "Language",
+    "menu_language_specific": "English",
+    "title": "Minecraft Server Downloader",
+    "menu_file": "File",
+    "menu_edit": "Edit",
+    "menu_help": "Help",
+    "tab_forge": "Forge",
+    "major_version": "Maj. Version",
+    "specific_version": "Forge Version",
+    "download": "Download",
+    "tab_fabric": "Fabric",
+    "fabric_version": "Fabric Version",
+    "tab_vanilla": "Vanilla",
+    "van_version": "Vanilla Version",
+    "tab_svr_dl": "Server Download",
+    "tab_mod": "Mod",
+    "": ""
+}

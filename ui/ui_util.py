@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import threading
-import mcssd.util as util
+import mcssd.procedure.util as util
 
 # 保存文件
-def file_save(url, file_name, progress_var):
-    dest = filedialog.asksaveasfilename(defaultextension=".jar", initialfile=file_name, filetypes=[("JAR files", "*.jar")])
+def file_save(argsx):
+    dest = filedialog.asksaveasfilename(defaultextension=".jar", initialfile=argsx[1], filetypes=[("JAR files", "*.jar")])
     if dest:
-        progress_var.set(0)
-        threading.Thread(target=util.download_file, args=(url, dest, progress_var)).start()
+        argsx[2].set(0)
+        threading.Thread(target=util.download_file, args=(argsx[0], dest, argsx[2])).start()

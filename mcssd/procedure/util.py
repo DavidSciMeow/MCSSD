@@ -1,10 +1,6 @@
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
 import requests
-import threading
 from urllib.parse import urlparse, parse_qs
 from bs4 import BeautifulSoup
-import logging
 
 # 获取Minecraft版本列表
 def get_versions():
@@ -79,7 +75,7 @@ def get_forge_versions(game_version):
 
 # 获取Fabric版本列表
 def get_fabric_versions():
-    url = "https://meta.fabricmc.net/v2/versions/loader"
+    url = "https://meta.fabricmc.net/v2/versions/installer"
     response = requests.get(url)
     data = response.json()
     versions = [(version['version'], version['maven']) for version in data if 'version' in version and 'maven' in version]

@@ -1,0 +1,19 @@
+{
+    "menu_language": "语言",
+    "menu_language_specific": "中文",
+    "title": "Minecraft服务器下载器",
+    "menu_file": "文件",
+    "menu_edit": "编辑",
+    "menu_help": "帮助",
+    "tab_forge": "Forge下载",
+    "major_version": "主版本",
+    "specific_version": "Forge服务器",
+    "download": "下载",
+    "tab_fabric": "Fabric服务器",
+    "fabric_version": "Fabric版本",
+    "tab_vanilla": "原版服务器",
+    "van_version": "原版版本号",
+    "tab_svr_dl": "服务端下载",
+    "tab_mod": "模组查找",
+    "": ""
+}
