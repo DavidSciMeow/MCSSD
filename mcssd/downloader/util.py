@@ -89,3 +89,12 @@ def download_file(url, dest, progress_var):
         for data in response.iter_content(1024):
             file.write(data)
             progress_var.set(progress_var.get() + len(data) / total_size * 100)
+
+# 获取原版数据
+def start_download_Vanilla(version): return f'https://launcher.mojang.com/v1/objects/{version}/server.jar'
+# 获取Forge版数据
+def start_download_forge(version): return f"https://maven.minecraftforge.net/net/minecraftforge/forge/{version}/forge-{version}-installer.jar"
+# 获取Fabric版数据
+def start_download_fabric(version): return next((item['url'] for item in requests.get("https://meta.fabricmc.net/v2/versions/installer").json() if item['version'] == version), None)
+    
+    

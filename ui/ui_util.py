@@ -1,11 +1,9 @@
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
-import threading
-import mcssd.procedure.util as util
+from PyQt5.QtWidgets import QFileDialog
+import global_vars
 
-# 保存文件
-def file_save(argsx):
-    dest = filedialog.asksaveasfilename(defaultextension=".jar", initialfile=argsx[1], filetypes=[("JAR files", "*.jar")])
-    if dest:
-        argsx[2].set(0)
-        threading.Thread(target=util.download_file, args=(argsx[0], dest, argsx[2])).start()
+def file_save(save_function, initial_filename):
+    options = QFileDialog.Options()
+    #options |= QFileDialog.DontUseNativeDialog
+    file_name, _ = QFileDialog.getSaveFileName(None, global_vars.lang.get('save_file_str', 'Save File'), initial_filename, "JAR files (*.jar)", options=options)
+    if file_name:
+        save_function(file_name)
