@@ -2,6 +2,8 @@ import requests
 from urllib.parse import urlparse, parse_qs
 from bs4 import BeautifulSoup
 
+
+
 # 获取Minecraft版本列表
 def get_versions():
     response = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json')
@@ -9,7 +11,7 @@ def get_versions():
     return [version['id'] for version in response.json()['versions']]
 
 # 获取所有Forge版本号列表
-def get_all_versions():
+def get_all_forge_majversions():
     response = requests.get('https://files.minecraftforge.net/net/minecraftforge/forge/')
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'lxml')
@@ -75,26 +77,46 @@ def get_forge_versions(game_version):
 
 # 获取Fabric版本列表
 def get_fabric_versions():
-    url = "https://meta.fabricmc.net/v2/versions/installer"
-    response = requests.get(url)
-    data = response.json()
-    versions = [(version['version'], version['maven']) for version in data if 'version' in version and 'maven' in version]
-    return versions
+    game_url = "https://meta.fabricmc.net/v2/versions/game"
+    loader_url = "https://meta.fabricmc.net/v2/versions/loader"
+    installer_url = "https://meta.fabricmc.net/v2/versions/installer"
+
+    game_response = requests.get(game_url)
+    loader_response = requests.get(loader_url)
+    installer_response = requests.get(installer_url)
+
+    game_versions = [
+        f"{item['version']}-stable" if item['stable'] else item['version']
+        for item in game_response.json()
+    ]
+    loader_versions = [item['version'] for item in loader_response.json()]
+    installer_versions = [item['version'] for item in installer_response.json()]
+
+    return (game_versions, loader_versions, installer_versions)
 
 # 下载文件
-def download_file(url, dest, progress_var):
+def download_file(url, dest, progress_bar):
     response = requests.get(url, stream=True)
     total_size = int(response.headers.get('content-length', 0))
+    fake_down = False
+
+    if total_size == 0: 
+        progress_bar.setValue(95) #API dont reveal file size
+        fake_down = True
+    
+    downloaded_size = 0
     with open(dest, 'wb') as file:
         for data in response.iter_content(1024):
+            downloaded_size += len(data)
             file.write(data)
-            progress_var.set(progress_var.get() + len(data) / total_size * 100)
+            if(not fake_down): progress_bar.setValue(int(downloaded_size / total_size * 100))
+
+    progress_bar.setValue(100)
 
 # 获取原版数据
 def start_download_Vanilla(version): return f'https://launcher.mojang.com/v1/objects/{version}/server.jar'
 # 获取Forge版数据
 def start_download_forge(version): return f"https://maven.minecraftforge.net/net/minecraftforge/forge/{version}/forge-{version}-installer.jar"
 # 获取Fabric版数据
-def start_download_fabric(version): return next((item['url'] for item in requests.get("https://meta.fabricmc.net/v2/versions/installer").json() if item['version'] == version), None)
-    
-    
+def start_download_fabric(game_version, loader_version, installer_version): 
+    return f"https://meta.fabricmc.net/v2/versions/loader/{game_version}/{loader_version}/{installer_version}/server/jar"

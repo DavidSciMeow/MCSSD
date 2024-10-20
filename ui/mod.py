@@ -139,7 +139,7 @@ class ModSearchTab(QtWidgets.QWidget):
         for version, types in version_dict.items():
             types_str = ', '.join(types).replace(":", "")
             mod_versions_list.addItem(f"{version} - {types_str}")
-        mod_versions_list.setDisabled(True)
+        #mod_versions_list.setDisabled(True)
         self.mod_details_layout.addWidget(mod_versions_list)
 
         mod_relations_label = QtWidgets.QLabel("Mod Relations:")
@@ -171,14 +171,18 @@ class ModSearchTab(QtWidgets.QWidget):
         dependency_list = [f"{mod} - {', '.join(types)}" for mod, types in dependency_dict.items()]
         expansion_list = [f"{mod} - {', '.join(types)}" for mod, types in expansion_dict.items()]
 
+        mod_dependency_label = QtWidgets.QLabel("Mod Dependency:")
+        mod_relations_layout.addWidget(mod_dependency_label)
+
         dependency_combobox = QtWidgets.QComboBox()
         dependency_combobox.addItems(dependency_list)
-        dependency_combobox.setCurrentText("Dependency")
         mod_relations_layout.addWidget(dependency_combobox)
+
+        mod_expansion_label = QtWidgets.QLabel("Mod Expansion:")
+        mod_relations_layout.addWidget(mod_expansion_label)
 
         expansion_combobox = QtWidgets.QComboBox()
         expansion_combobox.addItems(expansion_list)
-        expansion_combobox.setCurrentText("Expansion")
         mod_relations_layout.addWidget(expansion_combobox)
 
         related_links = mod_details.get('related_links', [])
